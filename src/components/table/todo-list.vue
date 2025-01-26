@@ -5,13 +5,26 @@
       row-key="name"
       :data="filterTableData"
       style="width: 100%; cursor: pointer"
+      @row-click="handleRowClick"
     >
+      <el-table-column width="180" label="Ações">
+        <template #default="scope">
+          <el-radio
+            size="small"
+            type="success"
+            :disabled="scope.row.status === 'DONE' || !canComplete(scope.row)"
+            @click.stop="completeTask(scope.row)"
+          >
+            {{ scope.row.status === "DONE" ? "Concluído" : "Pendente" }}
+          </el-radio>
+        </template>
+      </el-table-column>
       <el-table-column prop="name" label="Nome" width="180" />
       <el-table-column
         width="180"
         prop="status"
         label="Status"
-        :filters="[
+        :filters="[ 
           { text: 'Em Andamento', value: 'IN_PROGRESS' },
           { text: 'Pendente', value: 'PENDING' },
           { text: 'Concluída', value: 'DONE' },
@@ -20,16 +33,7 @@
         filter-placement="bottom-end"
       >
         <template #default="scope">
-          <el-tag
-            :type="
-              scope.row.status === 'PENDING'
-                ? 'warning'
-                : scope.row.status === 'IN_PROGRESS'
-                ? 'info'
-                : 'success'
-            "
-            disable-transitions
-          >
+          <el-tag :type="scope.row.status === 'PENDING' ? 'warning' : scope.row.status === 'IN_PROGRESS' ? 'info' : 'success'" disable-transitions>
             {{ getStatusText(scope.row.status) }}
           </el-tag>
         </template>
@@ -39,7 +43,7 @@
         width="180"
         prop="priority"
         label="Prioridade"
-        :filters="[
+        :filters="[ 
           { text: 'Alta', value: 'HIGH' },
           { text: 'Média', value: 'MEDIUM' },
           { text: 'Baixa', value: 'LOW' },
@@ -48,16 +52,7 @@
         filter-placement="bottom-end"
       >
         <template #default="scope">
-          <el-tag
-            :type="
-              scope.row.priority === 'HIGH'
-                ? 'danger'
-                : scope.row.priority === 'MEDIUM'
-                ? 'warning'
-                : 'success'
-            "
-            disable-transitions
-          >
+          <el-tag :type="scope.row.priority === 'HIGH' ? 'danger' : scope.row.priority === 'MEDIUM' ? 'warning' : 'success'" disable-transitions>
             {{ getPriorityText(scope.row.priority) }}
           </el-tag>
         </template>
@@ -69,22 +64,14 @@
         </template>
         <template #default="scope">
           <el-button size="small" @click="handleEdit(scope.row)"> Edit </el-button>
-          <el-button size="small" type="danger" @click="handleDelete(scope.row)">
+          <el-button size="small" type="danger" @click.stop="handleDelete(scope.row)">
             Delete
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-drawer
-      title="Detalhes da Tarefa"
-      v-model="drawerEdit"
-      :visible.sync="drawerEdit"
-      size="50%"
-    >
-      <template #title>
-        <h2>Detalhes da Tarefa</h2>
-      </template>
+    <el-drawer title="Detalhes da Tarefa" v-model="drawerEdit" :visible.sync="drawerEdit" size="50%">
       <Form :initialData="selectedRow" @submit="handleFormSubmit" />
     </el-drawer>
   </div>
@@ -117,14 +104,13 @@ const handleEdit = (row) => {
 };
 
 const handleDelete = (row) => {
-  console.log("Deletando ID:", row.id); // Verifica se o ID correto está sendo passado
-  store.deleteTodo(row.id); // Chama a função para remover pelo ID
-  todos.value = [...store.todos]; // Atualiza a lista para refletir as alterações
+  store.deleteTodo(row.id);
+  todos.value = store.todos; // Atualize a lista após a exclusão
 };
 
 const handleFormSubmit = (updatedData) => {
   // Atualize a tarefa no store
-  const index = todos.value.findIndex((todo) => todo.id === updatedData.id);
+  const index = todos.value.findIndex(todo => todo.id === updatedData.id);
   if (index !== -1) {
     todos.value[index] = updatedData;
   }
@@ -166,6 +152,25 @@ const getPriorityText = (priority) => {
       return "Baixa";
     default:
       return priority;
+  }
+};
+
+const canComplete = (task) => {
+  if (!task.dependencies || task.dependencies.length === 0) {
+    return true;
+  }
+  return task.dependencies.every(depId => {
+    const depTask = todos.value.find(todo => todo.id === depId);
+    return depTask && depTask.status === 'DONE';
+  });
+};
+
+const completeTask = (task) => {
+  if (canComplete(task)) {
+    task.status = 'DONE';
+    store.updateTodoStatus(task);
+  } else {
+    alert('Você não pode completar esta tarefa até que todas as dependências sejam concluídas.');
   }
 };
 </script>

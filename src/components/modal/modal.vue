@@ -29,7 +29,6 @@
 import { ref } from "vue";
 import type { DrawerProps } from "element-plus";
 import Form from "../forms/form.vue";
-import Uploads from "../upload/uploads.vue";
 
 const drawer2 = ref(false);
 const direction = ref<DrawerProps["direction"]>("rtl");
