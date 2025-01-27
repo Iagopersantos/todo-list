@@ -3,7 +3,7 @@ import { ref } from "vue";
 import TodoList from "@/components/table/todo-list.vue";
 import Kanban from "@/components/table/kanban.vue";
 
-const render = ref(false);
+const render = ref(true);
 </script>
 
 <template>
