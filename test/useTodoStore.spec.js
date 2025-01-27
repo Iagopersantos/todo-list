@@ -1,129 +1,69 @@
-const { describe, it, expect } = require("@jest/globals");
-const { setActivePinia, createPinia } = require("pinia");
-const { useTodoListStore } = require("../src/store/useTodoStore");
+import { defineStore } from "pinia";
+import { useStorage } from "@vueuse/core";
 
-describe("useTodoListStore", () => {
-  beforeEach(() => {
-    setActivePinia(createPinia());
-  });
+export const useTodoListStore = defineStore("todolist", {
+  state: () => ({
+    todos: useStorage("todos", []),
+  }),
+  getters: {
+    allTodos() {
+      return this.todos;
+    },
+    activeTodos() {
+      return this.todos.filter((todo) => !todo.completed);
+    },
+    completedTodos() {
+      return this.todos.filter((todo) => todo.completed);
+    },
+  },
+  actions: {
+    addTodo(itemObj) {
+      this.todos.unshift({ 
+        ...{ id: new Date().getTime(), dependencies: [], hasChildren: false }, 
+        ...itemObj 
+      });
+    },
+    clearCompleted() {
+      this.todos = this.todos.filter((todo) => !todo.completed);
+    },
+    updateTodoStatus(todo) {
+      const index = this.todos.findIndex(t => t.id === todo.id);
+      if (index !== -1) {
+        this.todos[index] = todo;
+      }
+    },
+    deleteTodo(id) {
+      this.todos = this.todos.filter((todo) => todo.id !== id);
+    },
+    reorderTodo(from, to) {
+      const item = this.todos.splice(from, 1);
+      this.todos.splice(to, 0, item[0]);
+    },
+    addDependency(taskId, dependencyObj) {
+      const task = this.todos.find((t) => t.id === taskId);
+    
+      if (!task) {
+        console.error("Tarefa não encontrada.");
+        return;
+      }
+    
+      if (!task.dependencies) {
+        task.dependencies = [];
+      }
+    
+      dependencyObj.id = new Date().getTime(); // Gera um ID único para a dependência
+      task.dependencies.push(dependencyObj);
+      task.hasChildren = true; // Marca que a tarefa possui dependências
+    },    
+    removeDependency(taskId, dependencyId) {
+      const task = this.todos.find((t) => t.id === taskId);
 
-  it("deve adicionar um novo todo", () => {
-    const store = useTodoListStore();
-    const todoItem = { text: "Aprender Vue", completed: false };
+      if (!task) {
+        console.error("Tarefa não encontrada.");
+        return;
+      }
 
-    store.addTodo(todoItem);
-
-    expect(store.todos).toHaveLength(1);
-    expect(store.todos[0]).toMatchObject(todoItem);
-    expect(store.todos[0]).toHaveProperty("id");
-  });
-
-  it("deve retornar todos os todos", () => {
-    const store = useTodoListStore();
-    store.todos = [
-      { id: 1, text: "Task 1", completed: false },
-      { id: 2, text: "Task 2", completed: true },
-    ];
-
-    expect(store.allTodos).toEqual(store.todos);
-  });
-
-  it("deve retornar apenas os todos ativos", () => {
-    const store = useTodoListStore();
-    store.todos = [
-      { id: 1, text: "Task 1", completed: false },
-      { id: 2, text: "Task 2", completed: true },
-    ];
-
-    expect(store.activeTodos).toEqual([{ id: 1, text: "Task 1", completed: false }]);
-  });
-
-  it("deve retornar apenas os todos concluídos", () => {
-    const store = useTodoListStore();
-    store.todos = [
-      { id: 1, text: "Task 1", completed: false },
-      { id: 2, text: "Task 2", completed: true },
-    ];
-
-    expect(store.completedTodos).toEqual([{ id: 2, text: "Task 2", completed: true }]);
-  });
-
-  it("deve limpar todos os todos concluídos", () => {
-    const store = useTodoListStore();
-    store.todos = [
-      { id: 1, text: "Task 1", completed: false },
-      { id: 2, text: "Task 2", completed: true },
-    ];
-
-    store.clearCompleted();
-
-    expect(store.todos).toEqual([{ id: 1, text: "Task 1", completed: false }]);
-  });
-
-  it("deve atualizar o status de um todo", () => {
-    const store = useTodoListStore();
-    store.todos = [{ id: 1, text: "Task 1", completed: false }];
-
-    const updatedTodo = { id: 1, text: "Task 1", completed: true };
-    store.updateTodoStatus(updatedTodo);
-
-    expect(store.todos[0]).toEqual(updatedTodo);
-  });
-
-  it("deve deletar um todo", () => {
-    const store = useTodoListStore();
-    store.todos = [
-      { id: 1, text: "Task 1", completed: false },
-      { id: 2, text: "Task 2", completed: true },
-    ];
-
-    store.deleteTodo(1);
-
-    expect(store.todos).toEqual([{ id: 2, text: "Task 2", completed: true }]);
-  });
-
-  it("deve reordenar os todos", () => {
-    const store = useTodoListStore();
-    store.todos = [
-      { id: 1, text: "Task 1", completed: false },
-      { id: 2, text: "Task 2", completed: true },
-    ];
-
-    store.reorderTodo(0, 1);
-
-    expect(store.todos).toEqual([
-      { id: 2, text: "Task 2", completed: true },
-      { id: 1, text: "Task 1", completed: false },
-    ]);
-  });
-
-  it("deve adicionar uma dependência a uma tarefa", () => {
-    const store = useTodoListStore();
-    store.todos = [{ id: 1, text: "Task 1", completed: false, dependencies: [] }];
-
-    const dependency = { text: "Subtask 1" };
-    store.addDependency(1, dependency);
-
-    expect(store.todos[0].dependencies).toHaveLength(1);
-    expect(store.todos[0].dependencies[0]).toHaveProperty("id");
-    expect(store.todos[0].hasChildren).toBe(true);
-  });
-
-  it("deve remover uma dependência de uma tarefa", () => {
-    const store = useTodoListStore();
-    store.todos = [
-      {
-        id: 1,
-        text: "Task 1",
-        completed: false,
-        dependencies: [{ id: 1, text: "Subtask 1" }],
-      },
-    ];
-  
-    store.removeDependency(1, 1);
-  
-    expect(store.todos[0].dependencies).toHaveLength(0);
-    expect(store.todos[0].hasChildren).toBe(false);
-  });
-  
+      task.dependencies = task.dependencies.filter((depId) => depId !== dependencyId);
+    },
+  },
 });

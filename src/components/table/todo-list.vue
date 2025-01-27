@@ -88,7 +88,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted } from "vue";
-import { useTodoListStore } from "@/store/useTodoStore";
+import { useTodoListStore } from "@/store/useTodoListStore";
 import Form from "../forms/form.vue";
 
 const store = useTodoListStore();

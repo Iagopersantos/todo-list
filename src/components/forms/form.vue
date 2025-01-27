@@ -34,7 +34,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref, watch, computed } from "vue";
-import { useTodoListStore } from "@/store/useTodoStore";
+import { useTodoListStore } from "../../store/useTodoListStore";
 
 const emit = defineEmits(["submit", "cancel"]);
 const store = useTodoListStore();

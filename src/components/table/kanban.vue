@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted } from "vue";
-import { useTodoListStore } from "@/store/useTodoStore";
+import { useTodoListStore } from "@/store/useTodoListStore";
 import Card from "../card/card.vue";
 
 const store = useTodoListStore();
