@@ -1,6 +1,6 @@
 const { describe, it, expect } = require("@jest/globals");
 const { setActivePinia, createPinia } = require("pinia");
-const { useTodoListStore } = require("../useTodoStore");
+const { useTodoListStore } = require("../src/store/useTodoStore");
 
 describe("useTodoListStore", () => {
   beforeEach(() => {

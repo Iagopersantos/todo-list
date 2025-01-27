@@ -1,57 +1,82 @@
-# todo-nectar
+# Todo-Nectar: Vue Todo List
 
-This template should help get you started developing with Vue 3 in Vite.
+Este projeto é uma aplicação de lista de tarefas (Todo List) desenvolvida utilizando Vue 3 e Vite. O objetivo é criar uma aplicação simples, rápida e moderna para gerenciamento de tarefas, com suporte a testes e configuração de desenvolvimento eficiente. Este desafio foca na criação de uma aplicação escalável com Vue.js, organizando os componentes em uma hierarquia eficiente, otimizando o desempenho da aplicação e aplicando boas práticas de arquitetura.
 
-## Recommended IDE Setup
+## Tecnologias Utilizadas
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- [Vue 3](https://vuejs.org/): Framework progressivo para construção de interfaces de usuário.
+- [Vite](https://vitejs.dev/): Ferramenta de build rápida e moderna.
+- [pnpm](https://pnpm.io/): Gerenciador de pacotes eficiente.
+- [Jest](https://jestjs.io/): Framework para testes unitários.
+- [ESLint](https://eslint.org/): Ferramenta para garantir a qualidade e consistência do código.
 
-## Customize configuration
+## Configuração Recomendável de IDE
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- [VSCode](https://code.visualstudio.com/): Editor de código recomendado.
+- [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar): Extensão para suporte ao Vue 3. (Desative o Vetur para evitar conflitos.)
 
-## Project Setup
+## Como Configurar o Projeto
 
-```sh
-npm install
-```
+### Instalação de Dependências
 
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
+Utilize o `pnpm` para instalar as dependências do projeto:
 
 ```sh
-npm run build
+pnpm install
 ```
 
-### Run Headed Component Tests with [Cypress Component Testing](https://on.cypress.io/component)
+### Executar o Ambiente de Desenvolvimento
+
+Para compilar e executar o projeto em modo de desenvolvimento com recarregamento automático:
 
 ```sh
-npm run test:unit:dev # or `npm run test:unit` for headless testing
+pnpm dev
 ```
 
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
+### Gerar Versão de Produção
+
+Para compilar e minificar o projeto para produção:
 
 ```sh
-npm run test:e2e:dev
+pnpm build
 ```
 
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
+### Testes Unitários com Jest
 
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
+Para rodar os testes unitários:
 
 ```sh
-npm run build
-npm run test:e2e
+pnpm test
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+### Verificação de Qualidade de Código com ESLint
+
+Para executar a lintagem do código e garantir a qualidade e consistência:
 
 ```sh
-npm run lint
+pnpm lint
 ```
+
+### Estrutura do Projeto
+
+```plaintext
+/
+├── src/             # Código fonte do projeto
+│   ├── components/ # Componentes Vue reutilizáveis
+│   ├── views/       # Páginas principais da aplicação
+│   ├── store/       # Gerenciamento de estado (opcional)
+│   └── assets/      # Recursos estáticos (imagens, estilos, etc.)
+├── public/         # Arquivos estáticos
+├── tests/          # Testes unitários e outros
+├── vite.config.ts  # Configuração do Vite
+└── package.json    # Configuração do projeto e scripts
+```
+
+## Scripts Disponíveis
+
+- `pnpm dev`: Executa o ambiente de desenvolvimento.
+- `pnpm build`: Compila o projeto para produção.
+- `pnpm test`: Executa os testes unitários com Jest.
+- `pnpm lint`: Executa o ESLint para verificar a qualidade do código.
+
+![alt text](image.png)
