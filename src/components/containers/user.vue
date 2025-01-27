@@ -1,12 +1,8 @@
-<script>
-export default {};
-</script>
-
 <template>
   <div class="user">
     <div class="user-info">
       <img src="@/assets/user.png" class="photo" alt="Gerenciador de Tarefas" title="John Doe" />
-      <span class="title">Peter Stanbridge</span>
+      <span class="title">Iago Pereira dos Santos</span>
     </div>
   </div>
 </template>
@@ -17,10 +13,10 @@ export default {};
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  width: 400px;
+  width: 300px;
   height: 30px;
   margin-right: 8px;
-  margin-left: 8px;
+  margin-left: 10px;
   border-radius: 26px;
   color: #2367D9;
   background-color: #eaebf3;

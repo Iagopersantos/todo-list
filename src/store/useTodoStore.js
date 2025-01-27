@@ -1,7 +1,7 @@
-import { defineStore } from "pinia";
-import { useStorage } from "@vueuse/core";
+const { defineStore } = require("pinia");
+const { useStorage } = require("@vueuse/core");
 
-export const useTodoListStore = defineStore("todolist", {
+const useTodoListStore = defineStore("todolist", {
   state: () => ({
     todos: useStorage("todos", []),
   }),
@@ -51,19 +51,24 @@ export const useTodoListStore = defineStore("todolist", {
         task.dependencies = [];
       }
     
-      dependencyObj.id = new Date().getTime(); // Gera um ID único para a dependência
+      dependencyObj.id = new Date().getTime();
       task.dependencies.push(dependencyObj);
-      task.hasChildren = true; // Marca que a tarefa possui dependências
+      task.hasChildren = true;
     },    
     removeDependency(taskId, dependencyId) {
       const task = this.todos.find((t) => t.id === taskId);
-
+    
       if (!task) {
         console.error("Tarefa não encontrada.");
         return;
       }
-
-      task.dependencies = task.dependencies.filter((depId) => depId !== dependencyId);
+    
+      task.dependencies = task.dependencies.filter((dep) => dep.id !== dependencyId);
+    
+      task.hasChildren = task.dependencies.length > 0;
     },
   },
 });
+
+
+module.exports = { useTodoListStore };

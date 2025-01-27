@@ -1,26 +1,7 @@
 <script setup>
 import { defineComponent } from "vue";
-import TextInput from "@/components/inputs/text-input.vue";
-import SelectButton from "../buttons/select-button.vue";
 import Modal from "../modal/modal.vue";
-import SearchInput from "../inputs/search-input.vue";
 import User from "../containers/user.vue";
-import SelectInput from "@/components/inputs/select-input.vue";
-
-const components = {
-  TextInput,
-  SelectInput,
-  Modal,
-  SelectButton,
-  SearchInput,
-  SelectInput,
-  User,
-};
-
-const data = () => ({
-  selectedOption: "",
-  options: ["IN PROGRESS", "PENDING", "COMPLETED"],
-});
 
 defineComponent({
   name: "AppSidebar",
