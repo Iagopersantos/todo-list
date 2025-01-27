@@ -22,7 +22,7 @@ const render = ref(false);
   flex-direction: column;
   justify-content: start;
   align-items: start;
-  width: 98%;
+  width: 94%;
   height: 90%;
   margin-top: 8px;
   box-shadow: 0 0 2px #a7a4a4;

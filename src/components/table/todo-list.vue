@@ -1,11 +1,12 @@
 <template>
-  <div>
+  <div class="table-container">
     <el-table
       ref="tableRef"
       row-key="name"
       :data="filterTableData"
       style="width: 100%; cursor: pointer"
       @row-click="handleRowClick"
+      :border="true"
     >
       <el-table-column width="180" label="Ações">
         <template #default="scope">
@@ -58,7 +59,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="Ações" width="180">
+      <el-table-column prop="dependencies" label="Dependências" width="180">
+        <template #default="scope">
+          <el-tag v-for="depId in scope.row.dependencies" :key="depId" type="info" disable-transitions>
+            {{ depId }}
+          </el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="Ações" width="300">
         <template #header>
           <el-input v-model="search" size="medium" placeholder="Type to search" />
         </template>
@@ -175,4 +184,9 @@ const completeTask = (task) => {
 };
 </script>
 
-<style scoped></style>
+<style>
+.table-container {
+  padding: 20px;
+}
+
+</style>

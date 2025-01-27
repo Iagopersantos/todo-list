@@ -3,27 +3,15 @@
     <div class="kanban-body">
       <div class="kanban-column">
         <h3>Pendente</h3>
-        <div v-for="task in pendingTasks" :key="task.id" class="kanban-item">
-          <p>{{ task.name }}</p>
-          <p>{{ task.desc }}</p>
-          <el-badge :value="getPriorityText(task.priority)" :status="task.priority === 'HIGH' ? 'danger' : task.priority === 'MEDIUM' ? 'warning' : 'success'" />
-        </div>
+        <Card v-for="task in pendingTasks" :key="task.id" :task="task" />
       </div>
       <div class="kanban-column">
         <h3>Em Andamento</h3>
-        <div v-for="task in inProgressTasks" :key="task.id" class="kanban-item">
-          <p>{{ task.name }}</p>
-          <p>{{ task.desc }}</p>
-          <el-badge :value="getPriorityText(task.priority)" :status="task.priority === 'HIGH' ? 'danger' : task.priority === 'MEDIUM' ? 'warning' : 'success'" />
-        </div>
+       <Card v-for="task in inProgressTasks" :key="task.id" :task="task" />
       </div>
       <div class="kanban-column">
         <h3>Concluída</h3>
-        <div v-for="task in doneTasks" :key="task.id" class="kanban-item">
-          <p>{{ task.name }}</p>
-          <p>{{ task.desc }}</p>
-          <el-badge :value="getPriorityText(task.priority)" :status="task.priority === 'HIGH' ? 'danger' : task.priority === 'MEDIUM' ? 'warning' : 'success'" />
-        </div>
+        <Card v-for="task in doneTasks" :key="task.id" :task="task" />
       </div>
     </div>
   </div>
@@ -32,6 +20,7 @@
 <script lang="ts" setup>
 import { computed, ref, onMounted } from "vue";
 import { useTodoListStore } from "@/store/useTodoStore";
+import Card from "../card/card.vue";
 
 const store = useTodoListStore();
 

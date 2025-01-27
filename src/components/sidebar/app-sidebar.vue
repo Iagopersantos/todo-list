@@ -42,7 +42,7 @@ defineComponent({
   flex-direction: row;
   justify-content: start;
   align-items: center;
-  width: 98%;
+  width: 94%;
   height: 50px;
   margin-top: 8px;
   background-color: #fff;

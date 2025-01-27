@@ -4,7 +4,6 @@ import { useStorage } from "@vueuse/core";
 export const useTodoListStore = defineStore("todolist", {
   state: () => ({
     todos: useStorage("todos", []),
-    activeFilter: useStorage("activeFilter", "all"),
   }),
   getters: {
     allTodos() {
@@ -16,37 +15,21 @@ export const useTodoListStore = defineStore("todolist", {
     completedTodos() {
       return this.todos.filter((todo) => todo.completed);
     },
-    isEmpty() {
-      return this.todos.length <= 0;
-    },
   },
   actions: {
     addTodo(itemObj) {
-      this.todos.unshift({
-        id: new Date().getTime(),
-        dependencies: [],
-        completed: false,
-        ...itemObj,
+      this.todos.unshift({ 
+        ...{ id: new Date().getTime(), dependencies: [], hasChildren: false }, 
+        ...itemObj 
       });
     },
     clearCompleted() {
       this.todos = this.todos.filter((todo) => !todo.completed);
     },
-    updateTodoStatus(id) {
-      const todo = this.todos.find((t) => t.id === id);
-
-      if (!todo) return;
-
-      const allDependenciesCompleted = todo.dependencies.every((depId) =>
-        this.todos.find((t) => t.id === depId)?.completed
-      );
-
-      if (allDependenciesCompleted) {
-        todo.completed = !todo.completed;
-      } else {
-        console.error(
-          `A tarefa "${todo.name}" não pode ser concluída porque suas dependências não foram concluídas.`
-        );
+    updateTodoStatus(todo) {
+      const index = this.todos.findIndex(t => t.id === todo.id);
+      if (index !== -1) {
+        this.todos[index] = todo;
       }
     },
     deleteTodo(id) {
@@ -56,22 +39,22 @@ export const useTodoListStore = defineStore("todolist", {
       const item = this.todos.splice(from, 1);
       this.todos.splice(to, 0, item[0]);
     },
-    addDependency(taskId, dependencyId) {
+    addDependency(taskId, dependencyObj) {
       const task = this.todos.find((t) => t.id === taskId);
-      const dependency = this.todos.find((t) => t.id === dependencyId);
-
-      if (!task || !dependency) {
-        console.error("Tarefa ou dependência não encontrada.");
+    
+      if (!task) {
+        console.error("Tarefa não encontrada.");
         return;
       }
-
-      if (task.dependencies.includes(dependencyId)) {
-        console.warn("Essa dependência já foi adicionada.");
-        return;
+    
+      if (!task.dependencies) {
+        task.dependencies = [];
       }
-
-      task.dependencies.push(dependencyId);
-    },
+    
+      dependencyObj.id = new Date().getTime(); // Gera um ID único para a dependência
+      task.dependencies.push(dependencyObj);
+      task.hasChildren = true; // Marca que a tarefa possui dependências
+    },    
     removeDependency(taskId, dependencyId) {
       const task = this.todos.find((t) => t.id === taskId);
 
